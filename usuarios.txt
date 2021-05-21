@@ -1,0 +1,4 @@
+0:lobo:lobo:1
+1:angel:angel:1
+0:lobo:lobo
+1:loba:loba
