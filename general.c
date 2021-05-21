@@ -2,7 +2,7 @@
 //TO DO: acciones del proveedor
 #include "general.h"
 //Devolver la cadena del error
-char * cadenaError(int error){
+char* cadenaError(int error){
     switch(error){
         case ERROR_ARCH: return "Ha ocurrido un error con un archivo"; 
         case CAD_INV: return "Una de las entradas no es valida";
@@ -16,9 +16,9 @@ char * cadenaError(int error){
     }
 }
 // Escribe un registro en el archivo correspondiente
-int escribirRegistroArchivo(int id, char * cadena, char * archivo){
+int escribirRegistroArchivo(int id, char* cadena, char* archivo){
     int estado;
-    FILE * fp;
+    FILE* fp;
     fp = fopen (archivo,"a");
     if(fp == NULL) return ERROR_ARCH;
     //Escribe la linea al final del archivo
@@ -29,7 +29,7 @@ int escribirRegistroArchivo(int id, char * cadena, char * archivo){
     return estado < 0 ? ERROR_ARCH : OK;
 }
 //Escribe un mensaje en la cola de mensajes
-int mandarPeticion(int * msqid, mensaje * msj ){
+int mandarPeticion(int* msqid, mensaje* msj ){
     if( msqid == NULL || msj == NULL )
         return AP_INV;
     //Manda mensaje
@@ -40,7 +40,7 @@ int mandarPeticion(int * msqid, mensaje * msj ){
     return OK;
 }
 //Recibe un mensaje de la cola de mensajes
-int leerRespuesta(int * msqid, mensaje * msj, int num_cliente){
+int leerRespuesta(int* msqid, mensaje* msj, int num_cliente){
     if( msqid == NULL || msj == NULL )
         return AP_INV;
     //Manda mensaje
@@ -51,13 +51,13 @@ int leerRespuesta(int * msqid, mensaje * msj, int num_cliente){
     return OK;       
 }
 //Convierte una linea del txt es una estructura snack
-int convLineaSnack(char * linea, snack ** producto){
-    if( linea == NULL || producto == NULL || *producto == NULL ) return AP_INV;
-    char * aux = linea;
+int convLineaSnack(char* linea, snack** producto){
+    if( linea == NULL || producto == NULL ||*producto == NULL ) return AP_INV;
+    char* aux = linea;
     //Obtenemos el id;
-    char * char_id = (char *)malloc(sizeof(char)*10);
-    char * char_existencia = (char *)malloc(sizeof(char)*10);
-    char * char_precio = (char *)malloc(sizeof(char)*10);
+    char* char_id = (char*)malloc(sizeof(char)*10);
+    char* char_existencia = (char*)malloc(sizeof(char)*10);
+    char* char_precio = (char*)malloc(sizeof(char)*10);
     if( char_id == NULL || char_existencia == NULL || char_precio == NULL) 
         return ERROR_EN_MEMORIA;
     //Formato de la linea. : es SEPARADOR
@@ -66,8 +66,8 @@ int convLineaSnack(char * linea, snack ** producto){
     //Saltamos el primer separador y obtenemos el id
     aux++;
     int i = 0;
-    while( *aux != C_SEPARADOR ){
-        char_id[i] = *aux;
+    while(*aux != C_SEPARADOR ){
+        char_id[i] =*aux;
         i++;
         aux++;
     }
@@ -76,8 +76,8 @@ int convLineaSnack(char * linea, snack ** producto){
     aux++;
     i = 0;
     //Obtenemos el nombre del snack
-    while( *aux != C_SEPARADOR ){
-        (*producto)->nombre_snack[i] = *aux;
+    while(*aux != C_SEPARADOR ){
+        (*producto)->nombre_snack[i] =*aux;
         aux++;
         i++;
     }
@@ -86,8 +86,8 @@ int convLineaSnack(char * linea, snack ** producto){
     aux++;
     //Obtenemos el precio
     i = 0;
-    while( *aux != C_SEPARADOR ){
-        char_precio[i] = *aux;
+    while(*aux != C_SEPARADOR ){
+        char_precio[i] =*aux;
         i++;
         aux++;
     }
@@ -96,8 +96,8 @@ int convLineaSnack(char * linea, snack ** producto){
     aux++;    
     //Obtenemos la cantidad disponible del producto
     i = 0;
-    while( *aux != C_SEPARADOR ){
-        char_existencia[i] = *aux;
+    while(*aux != C_SEPARADOR ){
+        char_existencia[i] =*aux;
         i++;
         aux++;
     }
@@ -109,11 +109,11 @@ int convLineaSnack(char * linea, snack ** producto){
 }
 //Busca la linea con el id recibido y regresa el apuntador al inicio de la linea
 //Pensado para updates.
-int buscarRegistro( FILE * archivo, char * id ){
+int buscarRegistro( FILE* archivo, char* id ){
     if( archivo == NULL || id == NULL ) return AP_INV;
     int long_linea = 150;
-    char * linea_leida = (char *)malloc(sizeof(char)*long_linea);
-    char * aux;
+    char* linea_leida = (char*)malloc(sizeof(char)*long_linea);
+    char* aux;
     int flag = 0, i = 0;
     //Buscamos la linea que empiece con el id
     //Formato de la linea. ':' es SEPARADOR. :id:...
@@ -122,10 +122,10 @@ int buscarRegistro( FILE * archivo, char * id ){
         //Saltamos el primer separador
         aux++;
         //Comparamos el id.
-        while( *aux == id[i] ){ aux++; i++; }
+        while(*aux == id[i] ){ aux++; i++; }
         //Si son iguales el id leido y el id recibido, regresamos el apuntador
         //al inicio de la linea
-        if( *aux ==  C_SEPARADOR && id[i] == '\0' ){
+        if(*aux ==  C_SEPARADOR && id[i] == '\0' ){
             flag = TRUE;
             fseek(archivo, -strlen(linea_leida), SEEK_CUR);
         }
@@ -134,15 +134,15 @@ int buscarRegistro( FILE * archivo, char * id ){
     return flag == TRUE ? OK : REGISTRO_NO_ENCONTRADO;
 }
 //Imprime los productos. Recibe el semaforo del archivo productos
-int mostrarProductos(sem_t * sem_productos){
+int mostrarProductos(sem_t* sem_productos){
     if(sem_productos == NULL) return AP_INV;
     //Long de la linea en el archivo. 
     int long_linea = 120;
-    char * linea_leida = (char *)malloc(sizeof(char)*long_linea);
+    char* linea_leida = (char*)malloc(sizeof(char)*long_linea);
     if( linea_leida == NULL ) return ERROR_EN_MEMORIA;
     //Activamos el semaforo y leemos el archivo;
     sem_wait(sem_productos);
-    FILE * archivo;
+    FILE* archivo;
     archivo = fopen(ARCH_PRO, "a+");
     if (archivo == NULL){
         sem_post(sem_productos);
@@ -151,12 +151,12 @@ int mostrarProductos(sem_t * sem_productos){
         return ERROR_ARCH;
     } 
     
-    snack * producto = (snack *)malloc(sizeof(snack));
+    snack* producto = (snack*)malloc(sizeof(snack));
     if( producto == NULL ) return ERROR_EN_MEMORIA;
-    producto->nombre_snack = (char *)malloc(sizeof(char)*100);
-    char * char_id = (char *)malloc(sizeof(char)*5);
-    char * char_precio = (char *)malloc(sizeof(char)*5);
-    char * char_existencia = (char *)malloc(sizeof(char)*5);
+    producto->nombre_snack = (char*)malloc(sizeof(char)*100);
+    char* char_id = (char*)malloc(sizeof(char)*5);
+    char* char_precio = (char*)malloc(sizeof(char)*5);
+    char* char_existencia = (char*)malloc(sizeof(char)*5);
     if( producto->nombre_snack == NULL || char_id == NULL || char_precio == NULL
         || char_existencia == NULL) {
         free(linea_leida);
@@ -209,9 +209,9 @@ int mostrarProductos(sem_t * sem_productos){
 }
 //Obtiene el ultimo id de un archivo. Recibe String con el nombre del txt y el numero de separadores
 //Que tienen las lineas en el archivo.
-int obtUltimoId(const char * nombre_archivo, int separadores_por_linea){
+int obtUltimoId(const char* nombre_archivo, int separadores_por_linea){
     if(nombre_archivo == NULL) return AP_INV;
-    FILE * archivo;
+    FILE* archivo;
     archivo = fopen(nombre_archivo,"a+");
     
     //Si no se encuentra el archivo, se crea.
@@ -220,7 +220,7 @@ int obtUltimoId(const char * nombre_archivo, int separadores_por_linea){
     
     //Verificamos que no este vacio el archivo. Si esta vacio regresamos
     //el id 0.
-    char * aux = (char *)malloc(sizeof(char)*20);
+    char* aux = (char*)malloc(sizeof(char)*20);
     if(aux == NULL) {
         fclose(archivo);
         return ERROR_EN_MEMORIA;
@@ -254,7 +254,7 @@ int obtUltimoId(const char * nombre_archivo, int separadores_por_linea){
     while( (c = fgetc(archivo)) != C_SEPARADOR ){
         //Convertimos el numero a unidad o decena, etc...
         //Ejemplo: 12 => 2*10^0 + 1*10^1 y tenemos el id en int.
-        id += ( c - ASCII_CERO ) * pow(10, exp);
+        id += ( c - ASCII_CERO )* pow(10, exp);
         fseek(archivo, -2, SEEK_CUR);
         exp++;
     }
@@ -264,11 +264,11 @@ int obtUltimoId(const char * nombre_archivo, int separadores_por_linea){
 //Valida que en la cadena no se incluya el caracter separador o espacios
 //Valida nombres (de usuario, productos) y passwords
 //Regresa la longitud de la cadena en caso de ser aceptada
-int validarCadena(const char * cadena){
+int validarCadena(const char* cadena){
     if(cadena == NULL) return AP_INV;
     int cadena_long = 0;
     while(*cadena){
-        if(*cadena == C_SEPARADOR || *cadena == ' ')
+        if(*cadena == C_SEPARADOR ||*cadena == ' ')
             return CAD_INV;
         cadena++;
         cadena_long++;

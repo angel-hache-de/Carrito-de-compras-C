@@ -1,7 +1,7 @@
 #include "general.h"
 
-sem_t * sem_productos;
-sem_t * sem_carritos;
+sem_t* sem_productos;
+sem_t* sem_carritos;
 
 int iniciar_semaforos(key_t llave_productos, key_t llave_carritos){
     int memoria1, memoria2;
@@ -17,16 +17,16 @@ int iniciar_semaforos(key_t llave_productos, key_t llave_carritos){
     return OK;
 }
 //Agrega un producto al carrito de compras.
-int agregarACarrito( int id_cliente, char * id_producto, int cantidad){
+int agregarACarrito( int id_cliente, char* id_producto, int cantidad){
     if( id_producto == NULL ) return AP_INV;
     //Verificamos que la cantidad del producto sea menor a la disponible
-    snack * producto = (snack *)malloc(sizeof(snack));
+    snack* producto = (snack*)malloc(sizeof(snack));
     if( producto == NULL )
         return ERROR_EN_MEMORIA;
     int long_linea = 300;
-    FILE * archivo;
-    producto->nombre_snack = (char *)malloc(sizeof(char)*100);
-    char * linea_anterior = (char *)malloc(sizeof(char)*long_linea);
+    FILE* archivo;
+    producto->nombre_snack = (char*)malloc(sizeof(char)*100);
+    char* linea_anterior = (char*)malloc(sizeof(char)*long_linea);
     if( producto->nombre_snack == NULL || linea_anterior == NULL)
         return ERROR_EN_MEMORIA;
     int estado;
@@ -75,8 +75,8 @@ int agregarACarrito( int id_cliente, char * id_producto, int cantidad){
     }
     //Preparamos la linea a insertar. Formato:
     //                          NO_COMRPADO:nombre_snack:cantidad:precio_total:
-    int precio_total = producto->precio * cantidad;
-    char * nueva_linea = (char *)malloc(sizeof(char)*long_linea);
+    int precio_total = producto->precio* cantidad;
+    char* nueva_linea = (char*)malloc(sizeof(char)*long_linea);
     sprintf(nueva_linea, "%d%c%s%c%d%c%d%c", NO_COMPRADO, C_SEPARADOR, producto->nombre_snack, 
                                             C_SEPARADOR, cantidad, C_SEPARADOR,
                                             precio_total, C_SEPARADOR);
@@ -116,11 +116,11 @@ int agregarACarrito( int id_cliente, char * id_producto, int cantidad){
     return OK;
 }
 //Muestra los productos y da la opcion de agregar alguno al carrito.
-void menuAgregarProductos(usuario * cliente){
+void menuAgregarProductos(usuario* cliente){
     int opcion = 0;
     int estado;
     //Cadenas para tener almacenar el id de producto y la cantidad.
-    char * id = (char *)malloc(sizeof(char)*10); 
+    char* id = (char*)malloc(sizeof(char)*10); 
     int cantidad;
     if( id == NULL ){
         puts("-----Error en memoria------");
@@ -165,9 +165,9 @@ void menuAgregarProductos(usuario * cliente){
 int mostrarCarritoVentas(int id_cliente, int estado){
     //Preparamos una linea del tipo: :id:estado:
     int long_linea_leida = 150, precio_total = 0, i;
-    char * linea_a_buscar = (char *)malloc(sizeof(char)*20);
-    char * linea_leida = (char *)malloc(sizeof(char)*long_linea_leida);
-    char * char_precio = (char *)malloc(sizeof(char)*5);
+    char* linea_a_buscar = (char*)malloc(sizeof(char)*20);
+    char* linea_leida = (char*)malloc(sizeof(char)*long_linea_leida);
+    char* char_precio = (char*)malloc(sizeof(char)*5);
     if( linea_a_buscar == NULL || linea_leida == NULL || char_precio == NULL ) 
         return ERROR_EN_MEMORIA;
     
@@ -179,7 +179,7 @@ int mostrarCarritoVentas(int id_cliente, int estado){
     sem_wait(sem_carritos);
     //Obtenemos los primeros "long_linea" caractere de cada linea del archivo
     //y la comparamos con la linea a buscar. Si es igual, se muestra.
-    FILE * archivo = fopen(ARCH_CAR, "r");
+    FILE* archivo = fopen(ARCH_CAR, "r");
     if( archivo == NULL ){
         sem_post(sem_carritos);
         free(linea_a_buscar);
@@ -187,7 +187,7 @@ int mostrarCarritoVentas(int id_cliente, int estado){
         free(char_precio);
         return ERROR_ARCH;
     } 
-    char * aux;
+    char* aux;
     int num_separdores, long_nombre_producto, long_cantidad;
     
     //Imprimimos la tabla
@@ -206,13 +206,13 @@ int mostrarCarritoVentas(int id_cliente, int estado){
             //LLegamos al nombre. Linea: :id:estado:nombre:...
             aux = linea_leida; 
             while( num_separdores != 3 ){
-                if( *aux == C_SEPARADOR )
+                if(*aux == C_SEPARADOR )
                     num_separdores++;
                 aux++;
             } 
             printf("\t");
             //Imprime el nombre
-            while( *aux != C_SEPARADOR ) {
+            while(*aux != C_SEPARADOR ) {
                 printf("%c",(*aux));
                 aux++; 
                 long_nombre_producto++;
@@ -222,7 +222,7 @@ int mostrarCarritoVentas(int id_cliente, int estado){
             printf(" ");
             //Imprime la cantidad
             aux++;
-            while( *aux != C_SEPARADOR ) {
+            while(*aux != C_SEPARADOR ) {
                 printf("%c",(*aux));
                 aux++; 
                 long_cantidad++;
@@ -231,9 +231,9 @@ int mostrarCarritoVentas(int id_cliente, int estado){
             //Imprime el precio total
             aux++;
             printf("$");
-            while( *aux != C_SEPARADOR ) {
+            while(*aux != C_SEPARADOR ) {
                 printf("%c",(*aux));
-                char_precio[i] = *aux;
+                char_precio[i] =*aux;
                 aux++; i++;
             }
             char_precio[i] = '\0';
@@ -258,10 +258,10 @@ int mostrarCarritoVentas(int id_cliente, int estado){
 int finalizarCompra(int id_cliente){
     //Preparamos una linea del tipo: :id:estado:
     int long_linea_leida = 150;
-    char * linea_a_buscar = (char *)malloc(sizeof(char)*20);
-    char * linea_leida = (char *)malloc(sizeof(char)*long_linea_leida);
+    char* linea_a_buscar = (char*)malloc(sizeof(char)*20);
+    char* linea_leida = (char*)malloc(sizeof(char)*long_linea_leida);
     //Solo va almacenar 2 separadores, el id y el estado
-    char * linea_nueva = ( char* )malloc(sizeof(char)*13);
+    char* linea_nueva = ( char* )malloc(sizeof(char)*13);
     if( linea_a_buscar == NULL || linea_leida == NULL || linea_nueva == NULL ) 
         return ERROR_EN_MEMORIA;
     
@@ -272,7 +272,7 @@ int finalizarCompra(int id_cliente){
     sem_wait(sem_carritos);
     //Obtenemos los primeros "long_linea" caractere de cada linea del archivo
     //y la comparamos con la linea a buscar. Si es igual, se muestra.
-    FILE * archivo = fopen(ARCH_CAR, "r+");
+    FILE* archivo = fopen(ARCH_CAR, "r+");
     if( archivo == NULL ){
         sem_post(sem_carritos);
         return ERROR_ARCH;
@@ -297,7 +297,7 @@ int finalizarCompra(int id_cliente){
 }
 
 //Muestra el menu para ver productos o ver carrito
-void menuProductos(int * msqid, usuario * cliente){
+void menuProductos(int* msqid, usuario* cliente){
     if( msqid == NULL || cliente == NULL )
         puts("-----Algo ha ido mal-----");
     system("clear");
@@ -341,11 +341,11 @@ void menuProductos(int * msqid, usuario * cliente){
     return;
 }
 //Menu de inicio y registro
-void menuInicioRegistro(int * msqid, int num_cliente){
+void menuInicioRegistro(int* msqid, int num_cliente){
     //Mientras 
     int opcion = 2;
-    mensaje * peticion = (mensaje* )malloc(sizeof(mensaje));
-    mensaje * respuesta = (mensaje* )malloc(sizeof(mensaje));
+    mensaje* peticion = (mensaje* )malloc(sizeof(mensaje));
+    mensaje* respuesta = (mensaje* )malloc(sizeof(mensaje));
     if(peticion == NULL) {
         printf("Memoria llena");
         return;
@@ -401,8 +401,8 @@ void menuInicioRegistro(int * msqid, int num_cliente){
             return;
         }
         //Creamos el objeto del cliente iniciado
-        usuario * cliente = (usuario *)malloc(sizeof( usuario ));
-        cliente->nombre_usuario = (char *)malloc(sizeof(char)*strlen(peticion->carga.nombre_usuario));
+        usuario* cliente = (usuario*)malloc(sizeof( usuario ));
+        cliente->nombre_usuario = (char*)malloc(sizeof(char)*strlen(peticion->carga.nombre_usuario));
         strcpy(cliente->nombre_usuario, peticion->carga.nombre_usuario);
         cliente->tipo = CLIENTE;
         cliente->id = respuesta->carga.id_usuario;
