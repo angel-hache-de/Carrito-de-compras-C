@@ -117,7 +117,6 @@ int agregarACarrito( int id_cliente, char * id_producto, int cantidad){
 }
 //Muestra los productos y da la opcion de agregar alguno al carrito.
 void menuAgregarProductos(usuario * cliente){
-    //Vertical es la pos en pantalla
     int opcion = 0;
     int estado;
     //Cadenas para tener almacenar el id de producto y la cantidad.
@@ -125,12 +124,14 @@ void menuAgregarProductos(usuario * cliente){
     int cantidad;
     if( id == NULL ){
         puts("-----Error en memoria------");
+        free(id);
         return;            
     }
     do{
         system("clear");
-        if (mostrarProductos(sem_productos) != OK) {
-            puts("----Algo ha salido mal----");
+        if ( (estado = mostrarProductos(sem_productos)) != OK) {
+            free(id);
+            printf("----%s----\n",cadenaError(estado));
             return;
         }
         puts("Escoge una de las opciones:");
@@ -166,10 +167,10 @@ int mostrarCarritoVentas(int id_cliente, int estado){
     int long_linea_leida = 150, precio_total = 0, i;
     char * linea_a_buscar = (char *)malloc(sizeof(char)*20);
     char * linea_leida = (char *)malloc(sizeof(char)*long_linea_leida);
-    if( linea_a_buscar == NULL || linea_leida == NULL ) return ERROR_EN_MEMORIA;
-    
     char * char_precio = (char *)malloc(sizeof(char)*5);
-    if( char_precio == NULL ) return ERROR_EN_MEMORIA;
+    if( linea_a_buscar == NULL || linea_leida == NULL || char_precio == NULL ) 
+        return ERROR_EN_MEMORIA;
+    
     
     sprintf(linea_a_buscar, "%c%d%c%d", C_SEPARADOR, id_cliente, C_SEPARADOR, estado);
     int long_linea_buscada = strlen(linea_a_buscar);
@@ -181,6 +182,9 @@ int mostrarCarritoVentas(int id_cliente, int estado){
     FILE * archivo = fopen(ARCH_CAR, "r");
     if( archivo == NULL ){
         sem_post(sem_carritos);
+        free(linea_a_buscar);
+        free(linea_leida);
+        free(char_precio);
         return ERROR_ARCH;
     } 
     char * aux;
@@ -201,7 +205,6 @@ int mostrarCarritoVentas(int id_cliente, int estado){
             long_nombre_producto = 0;
             //LLegamos al nombre. Linea: :id:estado:nombre:...
             aux = linea_leida; 
-            // puts("Entra");
             while( num_separdores != 3 ){
                 if( *aux == C_SEPARADOR )
                     num_separdores++;
@@ -313,7 +316,7 @@ void menuProductos(int * msqid, usuario * cliente){
             menuAgregarProductos(cliente); 
         else if( opcion == 2 ){
             if ( ( costo_total = mostrarCarritoVentas( cliente->id, NO_COMPRADO )) < 0)
-                puts(cadenaError(costo_total));
+                printf("-----%s------\n",cadenaError(costo_total));
             else{
                 puts("Elige lo que quieras hacer");
                 puts("1. Finalizar compra");
@@ -324,7 +327,7 @@ void menuProductos(int * msqid, usuario * cliente){
                     if( ( estado = finalizarCompra(cliente->id) ) < 0)
                         puts(cadenaError(estado));
                     else   
-                        printf("Has comprado %d productos por $%d\n", estado, costo_total);
+                        printf("Has finalizado tu compra de $%d\n", costo_total);
                 }
             }
         }
