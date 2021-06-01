@@ -1,5 +1,4 @@
 //Funciones que comparten los actores (clientes, control y proveedor)
-//TO DO: acciones del proveedor
 #include "general.h"
 //Devolver la cadena del error
 char* cadenaError(int error){
@@ -118,6 +117,7 @@ int buscarRegistro( FILE* archivo, char* id ){
     //Buscamos la linea que empiece con el id
     //Formato de la linea. ':' es SEPARADOR. :id:...
     while (  flag != TRUE && fgets(linea_leida, long_linea, archivo) != NULL ){
+        i = 0;
         aux = linea_leida;
         //Saltamos el primer separador
         aux++;
@@ -159,6 +159,7 @@ int mostrarProductos(sem_t* sem_productos){
     char* char_existencia = (char*)malloc(sizeof(char)*5);
     if( producto->nombre_snack == NULL || char_id == NULL || char_precio == NULL
         || char_existencia == NULL) {
+        sem_post(sem_productos);
         free(linea_leida);
         fclose(archivo);
         return ERROR_EN_MEMORIA;
@@ -167,6 +168,7 @@ int mostrarProductos(sem_t* sem_productos){
     
     int estado, espacio_nombre = 50, i;
     //Imprimimos la tabla
+    system("clear");
     printf("\t\t\t\tSNACKS CONGELADOS\n");
     printf("\tNumero  Nombre");
     //Imprime los espacios para darle lugar al nombre. 6 por la palabra nombre

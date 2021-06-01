@@ -12,6 +12,7 @@
 #include <sys/shm.h>
 #include <sys/sem.h>
 #include <sys/types.h>
+#include <stdio_ext.h>
 #include <math.h>
 #include <sys/msg.h>
 #include <ncurses.h>

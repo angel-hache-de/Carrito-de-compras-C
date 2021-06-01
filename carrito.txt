@@ -25,3 +25,4 @@
 :1:0:Cono de Fresa:5:100:
 :1:0:Cono de Fresa:1:20:
 :1:0:Cono de Vainilla:1:22:
+:10:1:Agua de Frutas:5:85:

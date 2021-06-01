@@ -62,7 +62,6 @@ int agregarACarrito( int id_cliente, char* id_producto, int cantidad){
         free(producto);
         return estado;
     }
-    
     //Si hay menos cantidad de la ingresada regresamos el error.
     if( producto->existencia < cantidad ){
         sem_post(sem_productos);
@@ -80,7 +79,6 @@ int agregarACarrito( int id_cliente, char* id_producto, int cantidad){
     sprintf(nueva_linea, "%d%c%s%c%d%c%d%c", NO_COMPRADO, C_SEPARADOR, producto->nombre_snack, 
                                             C_SEPARADOR, cantidad, C_SEPARADOR,
                                             precio_total, C_SEPARADOR);
-    
     if ( escribirRegistroArchivo(id_cliente, nueva_linea, ARCH_CAR) != OK){
         sem_post(sem_productos);
         sem_post(sem_carritos);

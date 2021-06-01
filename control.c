@@ -256,7 +256,6 @@ void* Hilo_lector(void* args){
     int* bandera = (int*)args;  
     mensaje* msj = (mensaje*)malloc(sizeof(mensaje));
     if(msj == NULL) perror("malloc");
-    int estado;
     //Se ejecuta todo el rato esperando peticiones
     while(*bandera != 0 ){
         //lee mensaje
@@ -293,9 +292,10 @@ int main(){
         perror("msgget");
         exit(-1);
     } 
-    //Inicia los semaforos de hilos y archivos
+    //Inicia los semaforos para los hilos
     sem_init(&mutex_peticiones, 0, 1);
     sem_init(&mutex_archivo_clientes, 0, 1);
+    
     iniciarSemaforos();
     pthread_create(&hilo_lector,NULL,Hilo_lector, (void*)&flag);
     pthread_create(&hilo_entrada,NULL,Hilo_entrada_usuario, (void*)&flag);
