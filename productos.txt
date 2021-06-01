@@ -1,0 +1,11 @@
+:0:Gelato:40:20:
+:1:Helado:20:37:
+:2:ICE:10:15:
+:3:Batido:22:15:
+:4:Smoothie:18:30:
+:5:Barquillo:10:53:
+:6:Frappe:20:35:
+:7:Esquimo:10:60:
+:8:Waffle:25:26:
+:9:Paleta de Coco:20:30:
+:10:Agua de Frutas:17:12:
