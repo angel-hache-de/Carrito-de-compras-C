@@ -100,19 +100,6 @@ typedef struct
     char * nombre_snack;
 } snack;
 
-typedef struct
-{
-    snack *producto;
-    snack *next;
-} lista_snacks;
-
-typedef struct
-{
-    int id_cliente;
-    lista_snacks productos;
-    int total;
-} carrito;
-
 //Metodos
 char * cadenaError(int error);
 int escribirRegistroArchivo(int id, char * cadena, char * archivo);

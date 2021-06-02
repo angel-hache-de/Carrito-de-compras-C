@@ -172,9 +172,8 @@ int buscarArticulo()
 int agregarExistencia()
 {
   FILE* archivo;
-  int i=0, flag=0,cant,estado;
+  int cant,estado;
   int long_linea = 300;
-  char* aux;
   char* id = (char*)malloc(sizeof(char)*10); 
   char* linea_leida = (char*)malloc(sizeof(char)*long_linea);
   snack* producto =(snack*)malloc(sizeof(snack)); 
@@ -198,7 +197,6 @@ int agregarExistencia()
     free(producto);
     free(linea_leida);
     free(id);
-    free(linea_anterior);
     return ERROR_ARCH;
   }
   //Busca el registro con el id que mandamos. 
@@ -210,11 +208,10 @@ int agregarExistencia()
     free(producto);
     free(linea_leida);
     free(id);
-    free(linea_anterior);
     return estado;
   }
   //Convierte la linea de texto en una estructura snack
-  if( ( estado = convLineaSnack( fgets(linea_anterior, long_linea, archivo), &producto ) ) != OK )
+  if( ( estado = convLineaSnack( fgets(linea_leida, long_linea, archivo), &producto ) ) != OK )
   {
     sem_post(sem_productos);
     fclose(archivo);
@@ -222,7 +219,6 @@ int agregarExistencia()
     free(producto->nombre_snack);
     free(id);
     free(producto);
-    free(linea_anterior);
     return estado;
   }
   //Imprime en forma de tabla
@@ -234,7 +230,7 @@ int agregarExistencia()
   __fpurge(stdin);
   producto->existencia=cant;
   //Regresa el apuntador del archivo al inicio de la linea a sobreescribir
-  fseek(archivo, -strlen(linea_anterior), SEEK_CUR);
+  fseek(archivo, -strlen(linea_leida), SEEK_CUR);
   //Sobreescribimos la línea
   if ( fprintf(archivo,"%c%d%c%s%c%d%c%d%c",C_SEPARADOR,producto->id,C_SEPARADOR,producto->nombre_snack,C_SEPARADOR,producto->precio,C_SEPARADOR,producto->existencia,C_SEPARADOR) < 0)
                 return ERROR_ARCH;
@@ -247,7 +243,6 @@ int agregarExistencia()
   free(producto);
   free(linea_leida);
   free(id);
-  free(linea_anterior);
   return OK;
 }
 
