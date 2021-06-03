@@ -107,7 +107,7 @@ int buscarArticulo()
       free(linea_leida);
       return ERROR_ARCH;
   }
-  puts("\nLos nombres no contienen espacio ni el caracter \":\"");
+  puts("\nLos nombres no el caracter \":\"");
   puts("Ingrese el nombre del snack a buscar (Confirme con enter): ");
   __fpurge(stdin);
   fgets(buscar, 200, stdin);  
@@ -115,7 +115,6 @@ int buscarArticulo()
   buscar[ strlen(buscar) - 1 ] = '\0';
   //Formato de la linea. ':' es SEPARADOR. :id:nombre:...
   while (  flag != TRUE && fgets(linea_leida, long_linea, archivo) != NULL ){
-    puts(linea_leida);
     aux = linea_leida;
     //Saltamos el primer y segundo separador
     while(i<2)
@@ -221,7 +220,7 @@ int agregarExistencia()
     free(producto);
     return estado;
   }
-  //Imprime en forma de tabla
+   //Imprime en forma de tabla
   puts("Artículo encontrado\nID\tNombre\t\tPrecio($)\tExistencia");
   printf("%d\t%s\t\t%d\t\t%d\n",producto->id,producto->nombre_snack,producto->precio,producto->existencia); 
   //Ungreso de la nueva cantidad
@@ -232,7 +231,7 @@ int agregarExistencia()
   //Regresa el apuntador del archivo al inicio de la linea a sobreescribir
   fseek(archivo, -strlen(linea_leida), SEEK_CUR);
   //Sobreescribimos la línea
-  if ( fprintf(archivo,"%c%d%c%s%c%d%c%d%c     \n",C_SEPARADOR,producto->id,C_SEPARADOR,producto->nombre_snack,C_SEPARADOR,producto->precio,C_SEPARADOR,producto->existencia,C_SEPARADOR) < 0)
+  if ( fprintf(archivo,"%c%d%c%s%c%d%c%d%c",C_SEPARADOR,producto->id,C_SEPARADOR,producto->nombre_snack,C_SEPARADOR,producto->precio,C_SEPARADOR,producto->existencia,C_SEPARADOR) < 0)
                 return ERROR_ARCH;
   puts("Existencia actualizada\nID\tNombre\t\tPrecio($)\tExistencia");
   printf("%d\t%s\t\t%d\t\t%d\n",producto->id,producto->nombre_snack,producto->precio,producto->existencia); 
