@@ -101,9 +101,8 @@ int agregarACarrito( int id_cliente, char* id_producto, int cantidad){
     //Regresamos el apuntador al inicio de la linea a sobreescribir
     fseek(archivo, -strlen(linea_anterior), SEEK_CUR);
     //Sobreescribimos la linea. Se compara para evitar tener doble salto de linea
-    if( strlen( linea_anterior ) > strlen( nueva_linea ) )
-        fprintf(archivo, "%s",nueva_linea);
-    else fprintf(archivo, "%s\n",nueva_linea);
+    fprintf(archivo, "%s",nueva_linea);
+    
     sem_post(sem_productos);
     sem_post(sem_carritos);
     fclose(archivo);

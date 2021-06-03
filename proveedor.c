@@ -232,7 +232,7 @@ int agregarExistencia()
   //Regresa el apuntador del archivo al inicio de la linea a sobreescribir
   fseek(archivo, -strlen(linea_leida), SEEK_CUR);
   //Sobreescribimos la línea
-  if ( fprintf(archivo,"%c%d%c%s%c%d%c%d%c",C_SEPARADOR,producto->id,C_SEPARADOR,producto->nombre_snack,C_SEPARADOR,producto->precio,C_SEPARADOR,producto->existencia,C_SEPARADOR) < 0)
+  if ( fprintf(archivo,"%c%d%c%s%c%d%c%d%c     \n",C_SEPARADOR,producto->id,C_SEPARADOR,producto->nombre_snack,C_SEPARADOR,producto->precio,C_SEPARADOR,producto->existencia,C_SEPARADOR) < 0)
                 return ERROR_ARCH;
   puts("Existencia actualizada\nID\tNombre\t\tPrecio($)\tExistencia");
   printf("%d\t%s\t\t%d\t\t%d\n",producto->id,producto->nombre_snack,producto->precio,producto->existencia); 

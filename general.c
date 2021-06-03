@@ -22,7 +22,7 @@ int escribirRegistroArchivo(int id, char* cadena, char* archivo){
     if(fp == NULL) return ERROR_ARCH;
     //Escribe la linea al final del archivo
     //Forma: :id:cadena
-    estado = fprintf (fp, "%c%d%c%s\n",C_SEPARADOR,id,C_SEPARADOR,cadena);
+    estado = fprintf (fp, "%c%d%c%s     \n",C_SEPARADOR,id,C_SEPARADOR,cadena);
     /* close the file*/  
     fclose (fp);
     return estado < 0 ? ERROR_ARCH : OK;
