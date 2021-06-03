@@ -281,7 +281,7 @@ int finalizarCompra(int id_cliente){
             fseek(archivo, -strlen(linea_leida), SEEK_CUR);
             //Modificamos el estado, el resto de la linea se mantiene igual.
             if ( fprintf(archivo, "%c%d%c%d", C_SEPARADOR, id_cliente, C_SEPARADOR, COMPRADO) < 0)
-                return ERROR_ARCH;
+                return ERROR_fARCH;
             
         }
     }
@@ -349,7 +349,7 @@ void menuInicioRegistro(int* msqid, int num_cliente){
     }
     peticion->carga.num_cliente = num_cliente;
     peticion->tipo = TYPMSG_USUARIO;
-    
+    peticion->carga.estado = USU_NO_LOG;
     while(opcion == 2){
         puts("Elige una opcion");
         puts("1. Iniciar sesion");
